@@ -47,7 +47,7 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
 		let (sut, client) = makeSUT()
 
 		let samples = [199, 201, 300, 400, 500]
-
+		
 		samples.enumerated().forEach { index, code in
 			expect(sut, toCompleteWith: .failure(.invalidData), when: {
 				let json = makeItemsJSON([])
@@ -56,15 +56,14 @@ class LoadFeedFromRemoteUseCaseTests: XCTestCase {
 		}
 	}
 
-//
-//	func test_load_deliversInvalidDataErrorOn200HTTPResponseWithInvalidJSON() {
-//		let (sut, client) = makeSUT()
-//
-//		expect(sut, toCompleteWith: .failure(.invalidData), when: {
-//			let invalidJSON = Data("invalid json".utf8)
-//			client.complete(withStatusCode: 200, data: invalidJSON)
-//		})
-//	}
+	func test_load_deliversInvalidDataErrorOn200HTTPResponseWithInvalidJSON() {
+		let (sut, client) = makeSUT()
+
+		expect(sut, toCompleteWith: .failure(.invalidData), when: {
+			let invalidJSON = Data("invalid json".utf8)
+			client.complete(withStatusCode: 200, data: invalidJSON)
+		})
+	}
 //
 //	func test_load_deliversInvalidDataErrorOn200HTTPResponseWithPartiallyValidJSONItems() {
 //		let (sut, client) = makeSUT()
