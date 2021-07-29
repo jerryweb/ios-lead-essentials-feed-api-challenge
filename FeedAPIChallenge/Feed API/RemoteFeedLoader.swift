@@ -7,10 +7,8 @@ import Foundation
 public final class RemoteFeedLoader: FeedLoader {
 	private let url: URL
 	private let client: HTTPClient
-	
-	public struct Root: Decodable {
-		
-	}
+
+	public struct Root: Decodable {}
 
 	public enum Error: Swift.Error {
 		case connectivity
@@ -37,5 +35,3 @@ public final class RemoteFeedLoader: FeedLoader {
 		}
 	}
 }
-
-
