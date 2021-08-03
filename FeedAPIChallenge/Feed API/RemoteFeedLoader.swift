@@ -7,8 +7,10 @@ import Foundation
 public final class RemoteFeedLoader: FeedLoader {
 	private let url: URL
 	private let client: HTTPClient
-
-	public struct Root: Decodable {}
+	
+	public struct Root: Decodable {
+		let items: [Item]
+	}
 
 	public enum Error: Swift.Error {
 		case connectivity
@@ -25,8 +27,13 @@ public final class RemoteFeedLoader: FeedLoader {
 
 			switch result {
 			case let .success((data, response)):
-				completion(.failure(Error.invalidData))
 
+				if response.statusCode == 200, let root = try? JSONDecoder().decode(Root.self, from: data){
+					completion(.success(root.items.map { $0.item }))
+				} else {
+					completion(.failure(Error.invalidData))
+				
+				}
 			case .failure:
 				completion(.failure(Error.connectivity))
 			}
@@ -35,3 +42,15 @@ public final class RemoteFeedLoader: FeedLoader {
 		}
 	}
 }
+
+public struct Item: Decodable {
+	let id: UUID
+	let description: String?
+	let location: String?
+	let url: URL
+
+	var item: FeedImage {
+		return FeedImage(id: id, description: description, location: location, url: url)
+	}
+}
+
