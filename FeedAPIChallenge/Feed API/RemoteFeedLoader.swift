@@ -41,7 +41,7 @@ public final class RemoteFeedLoader: FeedLoader {
 	}
 }
 
-public struct Item: Decodable {
+internal struct Item: Decodable {
 	let image_id: UUID
 	let image_desc: String?
 	let image_loc: String?
