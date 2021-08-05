@@ -7,14 +7,14 @@ import Foundation
 public final class RemoteFeedLoader: FeedLoader {
 	private let url: URL
 	private let client: HTTPClient
-	
-	public struct Root: Decodable {
-		let items: [Item]
-	}
 
 	public enum Error: Swift.Error {
 		case connectivity
 		case invalidData
+	}
+
+	public struct Root: Decodable {
+		let items: [Item]
 	}
 
 	public init(url: URL, client: HTTPClient) {
@@ -27,12 +27,10 @@ public final class RemoteFeedLoader: FeedLoader {
 
 			switch result {
 			case let .success((data, response)):
-
-				if response.statusCode == 200, let root = try? JSONDecoder().decode(Root.self, from: data){
-					completion(.success(root.items.map { $0.item }))
+				if response.statusCode == 200, let images = try? JSONDecoder().decode(Root.self, from: data) {
+					completion(.success(images.items.map({ $0.item })))
 				} else {
 					completion(.failure(Error.invalidData))
-				
 				}
 			case .failure:
 				completion(.failure(Error.connectivity))
@@ -44,13 +42,12 @@ public final class RemoteFeedLoader: FeedLoader {
 }
 
 public struct Item: Decodable {
-	let id: UUID
-	let description: String?
-	let location: String?
-	let url: URL
+	let image_id: UUID
+	let image_desc: String?
+	let image_loc: String?
+	let image_url: URL
 
 	var item: FeedImage {
-		return FeedImage(id: id, description: description, location: location, url: url)
+		return FeedImage(id: image_id, description: image_desc, location: image_loc, url: image_url)
 	}
 }
-
